@@ -14,7 +14,7 @@ export const registerUser = createAsyncThunk(
   ) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/signup",
+        "https://ai-task-manager-app-cjc2.onrender.com/api/auth/signup",
         payload
       );
       return res.data;
@@ -36,7 +36,7 @@ export const loginUser = createAsyncThunk(
   ) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://ai-task-manager-app-cjc2.onrender.com/api/auth/login",
         credentials
       );
       return res.data; // { id, name, email, token }
