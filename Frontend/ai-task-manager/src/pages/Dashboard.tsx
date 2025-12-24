@@ -6,6 +6,14 @@ import { fetchTasks } from "../services/task.api";
 import TaskList from "../components/TaskList";
 import LogoutButton from "../components/LogoutButton";
 import TaskFilters from "../components/TaskFilters";
+import type { Task } from "../types/taskTypes";
+import type {
+ TaskPriority, TaskStatus
+} from "../types/taskTypes";
+
+type StatusFilter = "all" | TaskStatus;
+type PriorityFilter = "all" | TaskPriority;
+type SortBy = "date-asc" | "date-desc" | "priority" | "newest";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -13,38 +21,31 @@ const Dashboard = () => {
 
   const { tasks, loading } = useAppSelector(state => state.tasks);
 
-  // 🔥 FETCH TASKS FOR DASHBOARD
   useEffect(() => {
     dispatch(fetchTasks());
   }, [dispatch]);
 
-  // 📊 Derive summary data
+  // Summary
   const totalTasks = tasks.length;
   const pendingTasks = tasks.filter(t => t.status !== "Completed").length;
   const completedTasks = tasks.filter(t => t.status === "Completed").length;
-  const highPriorityTasks = tasks.filter(
-    t => t.priority === "High"
-  ).length;
+  const highPriorityTasks = tasks.filter(t => t.priority === "High").length;
 
-  const [status, setStatus] = useState("all");
-  const [priority, setPriority] = useState("all");
-  const [sortBy, setSortBy] = useState("date-asc");
+  const [status, setStatus] = useState<StatusFilter>("all");
+  const [priority, setPriority] = useState<PriorityFilter>("all");
+  const [sortBy, setSortBy] = useState<SortBy>("date-asc");
 
-  // 🔥 FILTER + SORT LOGIC
   const filteredTasks = useMemo(() => {
-    let result = [...tasks];
+    let result: Task[] = [...tasks];
 
-    // Filter status
     if (status !== "all") {
       result = result.filter(t => t.status === status);
     }
 
-    // Filter priority
     if (priority !== "all") {
       result = result.filter(t => t.priority === priority);
     }
 
-    // Sorting
     switch (sortBy) {
       case "date-asc":
         result.sort(
@@ -62,12 +63,19 @@ const Dashboard = () => {
         );
         break;
 
-      case "priority":
-        const order = { High: 1, Medium: 2, Low: 3 };
-        result.sort(
-          (a, b) => order[a.priority] - order[b.priority]
-        );
-        break;
+     case "priority": {
+  const order: Record<"High" | "Medium" | "Low", number> = {
+    High: 1,
+    Medium: 2,
+    Low: 3,
+  };
+
+  result.sort(
+    (a, b) => order[a.priority] - order[b.priority]
+  );
+  break;
+}
+
 
       case "newest":
         result.sort(
@@ -83,34 +91,29 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6">
-
       {/* Header */}
-   <div className="flex justify-between items-center">
-  {/* Left side */}
-  <div>
-    <h1 className="text-2xl font-semibold text-gray-800">
-      Dashboard 👋
-    </h1>
-    <p className="text-sm text-gray-500 mt-1">
-      Manage your tasks efficiently
-    </p>
-  </div>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-800">
+            Dashboard 👋
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Manage your tasks efficiently
+          </p>
+        </div>
 
-  {/* Right side */}
-  <div className="flex items-center gap-3">
-    <button
-      onClick={() => navigate("/create-task")}
-      className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition"
-    >
-      + Create Task
-    </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate("/create-task")}
+            className="bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition"
+          >
+            + Create Task
+          </button>
+          <LogoutButton />
+        </div>
+      </div>
 
-    <LogoutButton />
-  </div>
-</div>
-
-
-      {/* Summary Cards */}
+      {/* Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
         {[
           { label: "Total Tasks", value: totalTasks },
@@ -126,7 +129,8 @@ const Dashboard = () => {
           </div>
         ))}
       </div>
- <TaskFilters
+
+      <TaskFilters
         status={status}
         priority={priority}
         sortBy={sortBy}
@@ -134,9 +138,8 @@ const Dashboard = () => {
         onPriorityChange={setPriority}
         onSortChange={setSortBy}
       />
-      {/* Task List */}
-      <TaskList tasks={filteredTasks} />
 
+      <TaskList tasks={filteredTasks} />
     </div>
   );
 };

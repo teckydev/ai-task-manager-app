@@ -13,7 +13,7 @@ const TaskList = ({ tasks }: Props) => {
 
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
-      dispatch(deleteTask(id)); // ✅ redux updates UI
+      dispatch(deleteTask(id)); //  redux updates UI
     }
   };
 
@@ -39,7 +39,7 @@ const TaskList = ({ tasks }: Props) => {
       {/* Rows */}
       {tasks.map(task => (
         <div
-          key={task.id}
+          key={task._id}
           className="grid grid-cols-4 px-4 py-3 border-t text-sm items-center"
         >
           <div className="font-medium text-gray-800">
@@ -66,14 +66,14 @@ const TaskList = ({ tasks }: Props) => {
 
           <div className="flex gap-2">
             <button
-              onClick={() => navigate(`/edit-task/${task.id}`)}
+              onClick={() => navigate(`/edit-task/${task._id}`)}
               className="text-indigo-600 hover:underline"
             >
               Edit
             </button>
 
             <button
-              onClick={() => handleDelete(task.id)}
+              onClick={() => handleDelete(task._id)}
               className="text-red-600 hover:underline"
             >
               Delete

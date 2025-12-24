@@ -1,7 +1,16 @@
+export type TaskPriority = "High" | "Medium" | "Low";
+export type TaskStatus = "Pending" | "In Progress" | "Completed";
+export type SortBy =
+  | "date-asc"
+  | "date-desc"
+  | "priority"
+  | "newest";
 export interface Task {
-  id: string;
+  _id: string;          // MongoDB id
   title: string;
   description: string;
-  dueDate: string;
-  aiSuggestion?: string;
+  priority: TaskPriority;
+  status: TaskStatus;
+  createdAt: string;
+   dueDate: string;
 }

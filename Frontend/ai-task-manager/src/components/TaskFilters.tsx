@@ -1,10 +1,17 @@
+import type {
+ TaskPriority, TaskStatus
+} from "../types/taskTypes";
+type StatusFilter = "all" | TaskStatus;
+type PriorityFilter = "all" | TaskPriority;
+type SortBy = "date-asc" | "date-desc" | "priority" | "newest";
+
 interface Props {
-  status: string;
-  priority: string;
-  sortBy: string;
-  onStatusChange: (v: string) => void;
-  onPriorityChange: (v: string) => void;
-  onSortChange: (v: string) => void;
+  status: StatusFilter;
+  priority: PriorityFilter;
+  sortBy: SortBy;
+  onStatusChange: (v: StatusFilter) => void;
+  onPriorityChange: (v: PriorityFilter) => void;
+  onSortChange: (v: SortBy) => void;
 }
 
 const TaskFilters = ({
@@ -17,11 +24,9 @@ const TaskFilters = ({
 }: Props) => {
   return (
     <div className="flex flex-wrap gap-4 bg-white p-4 rounded-xl shadow mt-6">
-
-      {/* Status */}
       <select
         value={status}
-        onChange={e => onStatusChange(e.target.value)}
+        onChange={e => onStatusChange(e.target.value as StatusFilter)}
         className="border px-3 py-2 rounded-lg"
       >
         <option value="all">All Status</option>
@@ -29,10 +34,9 @@ const TaskFilters = ({
         <option value="Completed">Completed</option>
       </select>
 
-      {/* Priority */}
       <select
         value={priority}
-        onChange={e => onPriorityChange(e.target.value)}
+        onChange={e => onPriorityChange(e.target.value as PriorityFilter)}
         className="border px-3 py-2 rounded-lg"
       >
         <option value="all">All Priority</option>
@@ -41,10 +45,9 @@ const TaskFilters = ({
         <option value="Low">Low</option>
       </select>
 
-      {/* Sort */}
       <select
         value={sortBy}
-        onChange={e => onSortChange(e.target.value)}
+        onChange={e => onSortChange(e.target.value as SortBy)}
         className="border px-3 py-2 rounded-lg"
       >
         <option value="date-asc">Due Date ↑</option>
